@@ -24,7 +24,7 @@ __version__      = __addon__.getAddonInfo('version')
 __addonpath__    = __addon__.getAddonInfo('path')
 __icon__         = __addon__.getAddonInfo('icon')
 
-FTV_API_URL = 'http://webservice.fanart.tv/v3/music/albums/%s?api_key='
+FTV_API_URL = 'http://webservice.fanart.tv/v3/music/albums/%s?api_key=4b5f48023a25b80f26eff44851afcdeb'
 MBZ_ALBUM_API_URL = 'http://musicbrainz.org/ws/2/release/%s?inc=release-groups&fmt=json'
 
 socket.setdefaulttimeout(10)
