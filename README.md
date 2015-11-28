@@ -1,4 +1,4 @@
-# script.musiccdart.downloader
+# script.musiccdart-downloader
 Kodi script add-on to download music CDArt
 
 The script uses MusicBrainz and Fanart.tv web services to add cdart.png to albums.
