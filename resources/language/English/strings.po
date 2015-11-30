@@ -1,0 +1,25 @@
+# Kodi Media Center language file
+# Addon Name: Music CDArt Downloader
+# Addon id: script.musiccdart-downloader
+# Addon Provider: mak
+msgid ""
+msgstr ""
+"Project-Id-Version: Kodi Addons\n"
+"Report-Msgid-Bugs-To: mak\n"
+"POT-Creation-Date: 2015-11-30 11:11+Z\n"
+"PO-Revision-Date: 2015-11-30 11:11+Z\n"
+"Last-Translator: Marco Bonardo\n"
+"Language-Team: English\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgctxt "#32000"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#32001"
+msgid "Silent mode"
+msgstr ""

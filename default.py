@@ -30,31 +30,35 @@ MBZ_ALBUM_API_URL = 'http://musicbrainz.org/ws/2/release/%s?inc=release-groups&f
 socket.setdefaulttimeout(10)
 
 tempdir = xbmc.translatePath('special://temp/');
+silent = __addon__.getSetting('silent')
 
 def main():
   xbmc.log('## Starting Add-on %s (%s)' % (str(__addonname__), str(__version__)), xbmc.LOGNOTICE)
 
-  dialog = xbmcgui.DialogProgress();
-  dialog.create(__addonname__, 'Music CDArt Downloader', '', '')
+  dialog = None
+  if not silent:
+    dialog = xbmcgui.DialogProgress();
+    dialog.create(__addonname__, 'Music CDArt Downloader', '', '')
 
   try:
-    results = getAlbums(dialog)
+    results = getAlbums()
     albums = []
     count = 0
     for album in results:
       # Allow the main thread to breath for Cancel to work properly.
-      xbmc.sleep(10)
-      if dialog.iscanceled():
+      xbmc.sleep(5)
+      if dialog and dialog.iscanceled():
         break
       if xbmc.abortRequested:
         break
       if not 'musicbrainzalbumid' in album or not album['musicbrainzalbumid']:
         continue
       count += 1
-      dialog.update(0,
-                    album['title'].encode("utf-8"),
-                    album['displayartist'].encode("utf-8"),
-                    str(count));
+      if dialog:
+        dialog.update(0,
+                      album['title'].encode("utf-8"),
+                      album['displayartist'].encode("utf-8"),
+                      str(count));
       # For each album get the first track to find the album path.
       track = getFirstTrackOfAlbum(album['albumid']);
       if 'file' in track:
@@ -70,16 +74,17 @@ def main():
     processed = 0
     for album in albums:
       # Allow the main thread to breath for Cancel to work properly.
-      xbmc.sleep(10)
-      if dialog.iscanceled():
+      xbmc.sleep(5)
+      if dialog and dialog.iscanceled():
         break
       if xbmc.abortRequested:
         break
       processed += 1
-      dialog.update(int(float(processed) / float(albums_len) * 100.0),
-                    '%d / %d - %s' % (processed, albums_len, album['title']),
-                    album['path'],
-                    '\n');
+      if dialog:
+        dialog.update(int(float(processed) / float(albums_len) * 100.0),
+                      '%d / %d - %s' % (processed, albums_len, album['title']),
+                      album['path'],
+                      '\n');
 
       # Check if a CDArt exists already
       cdart_path = os.path.join(album['path'], 'cdart.png')
@@ -98,15 +103,17 @@ def main():
         continue
 
       # xbmc.log('Found cdart %s' % cdart_url, xbmc.LOGNOTICE)
-      dialog.update(int(float(processed) / float(albums_len) * 100.0),
-                    '%d / %d - %s' % (processed, albums_len, album['title']),
-                    album['path'],
-                    '>>> cdart.png');
+      if dialog:
+        dialog.update(int(float(processed) / float(albums_len) * 100.0),
+                      '%d / %d - %s' % (processed, albums_len, album['title']),
+                      album['path'],
+                      '>>> cdart.png');
 
       downloadArt(cdart_url, cdart_path)
 
   finally:
-    dialog.close();
+    if dialog:
+      dialog.close();
     xbmc.log('## Stopping Add-on %s' % str(__addonname__), xbmc.LOGNOTICE)
 
 def getReleaseGroup(id):
@@ -152,7 +159,7 @@ def downloadArt(sourceurl, targetpath):
   except Exception, e:
     xbmc.log(str(e), xbmc.LOGNOTICE)
 
-def getAlbums(dialog):
+def getAlbums():
   result = xbmcJSONRPC('{"jsonrpc": "2.0", "method": "AudioLibrary.GetAlbums", "params": { "properties": ["displayartist", "title", "musicbrainzalbumid"], "sort": { "order": "ascending", "method": "album", "ignorearticle": true } }, "id": "libAlbums"}')
   if 'albums' in result:
     return result['albums']
